@@ -186,6 +186,12 @@ export async function POST(req: Request) {
     return Response.json({ code: created.code, totalPkr }, { status: 201 });
   } catch (err) {
     console.error(err);
+    if (err instanceof Error && err.message.includes("Could not find the table")) {
+      return Response.json(
+        { error: "Supabase tables are not set up yet. Run supabase/schema.sql in Supabase SQL Editor." },
+        { status: 503 },
+      );
+    }
     return Response.json({ error: "Something went wrong at the bakery. Try again." }, { status: 500 });
   }
 }

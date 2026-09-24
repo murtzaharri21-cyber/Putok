@@ -43,3 +43,17 @@ create table if not exists assets (
 create index if not exists products_available_idx on products (available, sort_order);
 create index if not exists orders_created_at_idx on orders (created_at desc);
 create index if not exists order_items_order_idx on order_items (order_id);
+
+insert into products (slug, name, tagline, pieces, price_pkr, sort_order)
+values
+  ('single', 'One Putok', 'A single round. Enough for one person and one pot of tea.', 1, 150, 1),
+  ('morning-three', 'Morning Three', 'Three rounds, wrapped in paper. The usual household order.', 3, 420, 2),
+  ('family-six', 'Family Six', 'Six rounds. Guests, cousins, or a long winter breakfast.', 6, 800, 3),
+  ('putok-apricot', 'Putok + Apricot Jam', 'Two rounds and a 250g jar of Hunza apricot jam.', 2, 650, 4),
+  ('week', 'The Week', 'One fresh putok at your door, seven mornings in a row.', 7, 950, 5)
+on conflict (slug) do update set
+  name = excluded.name,
+  tagline = excluded.tagline,
+  pieces = excluded.pieces,
+  price_pkr = excluded.price_pkr,
+  sort_order = excluded.sort_order;
