@@ -210,6 +210,8 @@ export default function PutokScene() {
   return (
     <div className="pointer-events-none fixed inset-0 z-25" aria-hidden>
       <Canvas
+        className="pointer-events-none"
+        style={{ pointerEvents: "none" }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         camera={{ position: [0, 0, 6.2], fov: 34, near: 0.1, far: 30 }}

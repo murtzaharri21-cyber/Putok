@@ -182,7 +182,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       <PutokScene />
 
       {/* Top bar */}
-      <header className="relative z-30 mx-auto flex max-w-[1400px] items-center justify-between px-6 pt-6 md:px-10">
+      <header className="pointer-events-auto relative z-30 mx-auto flex max-w-[1400px] items-center justify-between px-6 pt-6 md:px-10">
         <div className="mono">Karimabad, Hunza · 36.32° N</div>
         <nav className="mono hidden gap-8 md:flex">
           <a href="#what" className="hover:text-apricot">What it is</a>
@@ -197,7 +197,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       </header>
 
       {/* 0 — HERO */}
-      <section data-scene className="relative z-20 mx-auto flex min-h-screen max-w-[1400px] flex-col justify-end px-6 pb-10 pt-8 md:px-10 md:pt-10">
+      <section data-scene className="pointer-events-auto relative z-30 mx-auto flex min-h-screen max-w-[1400px] flex-col justify-end px-6 pb-10 pt-8 md:px-10 md:pt-10">
         <div className="mb-6 flex items-end justify-between md:mb-10">
           <p className="mono max-w-xs leading-relaxed text-ink-soft">
             (n.) the round oven bread of Hunza.
@@ -234,7 +234,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       <Marquee />
 
       {/* 1 — WHAT IT IS */}
-      <section id="what" data-scene className="relative z-20 mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
+      <section id="what" data-scene className="pointer-events-auto relative z-30 mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
         <div className="grid md:grid-cols-12">
           <div className="mono md:col-span-2">01 — What it is</div>
           <div className="md:col-span-6 md:col-start-7">
@@ -270,7 +270,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       </section>
 
       {/* 2 — HOW IT'S MADE */}
-      <section id="made" data-scene className="relative z-20 bg-paper-deep">
+      <section id="made" data-scene className="pointer-events-auto relative z-30 bg-paper-deep">
         <div className="mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
           <div className="grid md:grid-cols-12">
             <div className="mono md:col-span-2">02 — How it&apos;s made</div>
@@ -308,7 +308,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       </section>
 
       {/* 3 — HOW WE EAT IT */}
-      <section id="eat" data-scene className="relative mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
+      <section id="eat" data-scene className="pointer-events-auto relative z-30 mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
         <div className="grid md:grid-cols-12">
           <div className="mono md:col-span-2">03 — How we eat it</div>
           <div className="md:col-span-6 md:col-start-7">
@@ -344,7 +344,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       </section>
 
       {/* 4 — PRICE LIST */}
-      <section id="prices" data-scene className="relative mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
+      <section id="prices" data-scene className="pointer-events-auto relative z-30 mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
         <div className="grid md:grid-cols-12">
           <div className="mono md:col-span-2">04 — Price list</div>
           <div className="md:col-span-6">
@@ -430,7 +430,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       </section>
 
       {/* 5 — ORDER */}
-      <section id="order" data-scene className="relative bg-ink text-paper">
+      <section id="order" data-scene className="pointer-events-auto relative z-30 bg-ink text-paper">
         <div className="mx-auto max-w-[1400px] px-6 py-28 md:px-10 md:py-44">
           <div className="grid md:grid-cols-12">
             <div className="mono text-paper/60 md:col-span-2">05 — Order</div>
@@ -590,7 +590,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       </section>
 
       {/* 6 — FOOTER */}
-      <footer data-scene className="relative mx-auto flex min-h-[80vh] max-w-[1400px] flex-col justify-between px-6 pb-8 pt-24 md:px-10">
+      <footer data-scene className="pointer-events-auto relative z-30 mx-auto flex min-h-[80vh] max-w-[1400px] flex-col justify-between px-6 pb-8 pt-24 md:px-10">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
             <div className="mono text-ink-soft">Bakery</div>
