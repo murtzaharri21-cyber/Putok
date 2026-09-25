@@ -1,6 +1,14 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { orderItems, orders, products, type Product } from "@/db/schema";
+import {
+  orderItems,
+  orders,
+  products,
+  type Order,
+  type OrderItem,
+  type Product,
+} from "@/db/schema";
+import { supabaseAdmin } from "@/lib/supabase";
 
 const CATALOGUE = [
   {
@@ -74,6 +82,48 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getOrderByCode(code: string) {
+  if (supabaseAdmin) {
+    const { data, error } = await supabaseAdmin
+      .from("orders")
+      .select("*, order_items(*)")
+      .eq("code", code)
+      .maybeSingle();
+
+    if (error) throw new Error(`Supabase order query failed: ${error.message}`);
+    if (!data) return null;
+
+    const order: Order = {
+      id: data.id,
+      code: data.code,
+      customerName: data.customer_name,
+      phone: data.phone,
+      village: data.village,
+      address: data.address,
+      deliverySlot: data.delivery_slot,
+      notes: data.notes,
+      totalPkr: data.total_pkr,
+      status: data.status,
+      createdAt: new Date(data.created_at),
+    };
+    const items: OrderItem[] = (data.order_items ?? []).map((item: {
+      id: number;
+      order_id: number;
+      product_id: number;
+      product_name: string;
+      quantity: number;
+      unit_price_pkr: number;
+    }) => ({
+      id: item.id,
+      orderId: item.order_id,
+      productId: item.product_id,
+      productName: item.product_name,
+      quantity: item.quantity,
+      unitPricePkr: item.unit_price_pkr,
+    }));
+
+    return { order, items };
+  }
+
   const [order] = await db.select().from(orders).where(eq(orders.code, code));
   if (!order) return null;
   const items = await db

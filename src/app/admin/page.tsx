@@ -3,11 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-const ADMIN_EMAILS = [
-  "murtzaharry21@gmail.com",
-  "murtzaharri21@gmail.com",
-];
-
 const ORDER_STATUS_OPTIONS = [
   "received",
   "baking",
@@ -208,12 +203,7 @@ export default function AdminPage() {
         <div className="w-full rounded-2xl border border-ink/20 bg-white p-8 shadow-sm">
           <p className="mono text-sm uppercase tracking-[0.2em] text-ink-soft">Admin access</p>
           <h1 className="mt-4 display text-4xl">PUTOK Dashboard</h1>
-          <p className="mt-3 text-ink-soft">Use one of the configured admin emails and the shared admin password.</p>
-          <ul className="mt-5 space-y-2 text-sm text-ink-soft">
-            {ADMIN_EMAILS.map((item) => (
-              <li key={item}>• {item}</li>
-            ))}
-          </ul>
+          <p className="mt-3 text-ink-soft">Sign in with an authorized admin account.</p>
 
           <form onSubmit={signIn} className="mt-8 space-y-4">
             <div>
@@ -223,7 +213,7 @@ export default function AdminPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-xl border border-ink/20 bg-paper px-4 py-3 outline-none ring-0"
-                placeholder="murtzaharry21@gmail.com"
+                placeholder="Your admin email"
                 required
               />
             </div>

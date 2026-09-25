@@ -7,6 +7,8 @@ import { hasSupabaseServerConfig, supabaseAdmin } from "@/lib/supabase";
 export const dynamic = "force-dynamic";
 
 const VILLAGES = new Set([
+  "Chamangul",
+  "Gulmit",
   "Karimabad",
   "Aliabad",
   "Altit",
@@ -192,7 +194,7 @@ export async function POST(req: Request) {
         { status: 503 },
       );
     }
-    return Response.json({ error: "Something went wrong at the bakery. Try again." }, { status: 500 });
+    return Response.json({ error: "Something went wrong at Azra's home kitchen. Try again." }, { status: 500 });
   }
 }
 

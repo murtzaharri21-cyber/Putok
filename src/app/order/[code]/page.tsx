@@ -43,7 +43,7 @@ export default async function OrderPage({ params }: { params: Promise<{ code: st
         <div className="md:col-span-5 md:col-start-8">
           <div className="border border-dashed border-ink/50 p-6 md:p-8">
             <div className="display text-3xl">PUTOK</div>
-            <div className="mono mt-1 text-ink-soft">Karimabad · Hunza</div>
+            <div className="mono mt-1 text-ink-soft">Chamangul · Gulmit Gojal</div>
 
             <dl className="mono mt-8 grid grid-cols-2 gap-y-2 text-ink-soft">
               <dt>Placed</dt>

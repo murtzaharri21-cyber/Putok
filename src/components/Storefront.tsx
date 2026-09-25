@@ -10,6 +10,8 @@ import { measureScene, scrollState } from "./scrollState";
 const PutokScene = dynamic(() => import("./PutokScene"), { ssr: false });
 
 const VILLAGES = [
+  "Chamangul",
+  "Gulmit",
   "Karimabad",
   "Aliabad",
   "Altit",
@@ -38,7 +40,7 @@ function Stamp() {
           <path id="circ" d="M100,100 m-72,0 a72,72 0 1,1 144,0 a72,72 0 1,1 -144,0" />
         </defs>
         <text className="fill-ink" style={{ fontFamily: "var(--font-mono)", fontSize: 15, letterSpacing: 3 }}>
-          <textPath href="#circ">BAKED BEFORE SUNRISE · KARIMABAD · HUNZA · 2,438 M ·</textPath>
+          <textPath href="#circ">HOME MADE BY AZRA · GULMIT GOJAL · PUTOK ·</textPath>
         </text>
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
@@ -51,10 +53,10 @@ function Stamp() {
 function Marquee() {
   const items = [
     "Fresh every morning",
-    "Delivered in central Hunza by 8 am",
+    "Delivered from Gulmit Gojal by 8 am",
     "Cash on delivery",
-    "White flour · water · salt · fire",
-    "Karimabad → Aliabad → Altit → Ganish",
+    "White flour · water · salt · heat",
+    "Made at home by Azra",
     "Best torn, never sliced",
   ];
   const line = items.map((t, i) => (
@@ -79,7 +81,7 @@ export default function Storefront({ products }: { products: Product[] }) {
   const [form, setForm] = useState({
     customerName: "",
     phone: "",
-    village: "Karimabad",
+    village: "Chamangul",
     address: "",
     deliverySlot: "07:00-08:00",
     notes: "",
@@ -183,7 +185,7 @@ export default function Storefront({ products }: { products: Product[] }) {
 
       {/* Top bar */}
       <header className="pointer-events-auto relative z-30 mx-auto flex max-w-[1400px] items-center justify-between px-6 pt-6 md:px-10">
-        <div className="mono">Karimabad, Hunza · 36.32° N</div>
+        <div className="mono">Chamangul, Gulmit Gojal</div>
         <nav className="mono hidden gap-8 md:flex">
           <a href="#what" className="hover:text-apricot">What it is</a>
           <a href="#made" className="hover:text-apricot">How it&apos;s made</a>
@@ -200,7 +202,7 @@ export default function Storefront({ products }: { products: Product[] }) {
       <section data-scene className="pointer-events-auto relative z-30 mx-auto flex min-h-screen max-w-[1400px] flex-col justify-end px-6 pb-10 pt-8 md:px-10 md:pt-10">
         <div className="mb-6 flex items-end justify-between md:mb-10">
           <p className="mono max-w-xs leading-relaxed text-ink-soft">
-            (n.) the round oven bread of Hunza.
+            (n.) the round home-made bread of Hunza.
             <br />
             eaten in the morning, with milk tea.
           </p>
@@ -214,12 +216,12 @@ export default function Storefront({ products }: { products: Product[] }) {
         <div className="mt-8 grid gap-8 md:grid-cols-12 md:items-end">
           <p className="display text-3xl md:col-span-6 md:text-5xl">
             White flour, water, salt. <br />
-            <span className="italic-display text-ink-soft">Fire does the rest.</span>
+            <span className="italic-display text-ink-soft">Azra does the rest.</span>
           </p>
           <div className="md:col-span-6 md:pl-10">
             <p className="max-w-md text-lg leading-relaxed text-ink-soft">
-              We bake at five. The bread is at your door before the tea has finished boiling.
-              Order tonight for tomorrow morning — anywhere between Hassanabad and Gulmit.
+              Azra makes each Putok at home in Chamangul, Gulmit Gojal. It is baked in a
+              bukhari heater or oven for 50 to 60 minutes, then delivered for breakfast.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <a href="#order" className="btn-ink rounded-full px-7 py-4 text-lg">
@@ -242,14 +244,14 @@ export default function Storefront({ products }: { products: Product[] }) {
               A round of bread the size of a <span className="scribble">dinner plate</span>, scored like the sun.
             </h2>
             <p className="reveal mt-10 max-w-xl text-xl leading-relaxed text-ink-soft">
-              Putok is what most houses in Hunza wake up to. It isn&apos;t sweet, it isn&apos;t
+              Putok is what many homes in Hunza wake up to. It isn&apos;t sweet, it isn&apos;t
               fancy, and it isn&apos;t meant to be eaten alone — it is meant to be torn into pieces and
               dipped into a cup of hot milk tea until it softens.
             </p>
             <p className="reveal mt-6 max-w-xl text-xl leading-relaxed text-ink-soft">
-              The dough is plain white flour and water with a little salt. It rests, it gets shaped
-              by hand into a thick disc, the top is cut in lines with a knife so it bakes evenly, and
-              it goes into a hot oven until the crust turns the colour of dry apricots.
+              Azra uses white flour, water and a little salt. The dough is shaped by hand into a
+              thick disc, scored so it bakes evenly, and baked in a bukhari heater or oven for 50 to
+              60 minutes until the crust turns the colour of dry apricots.
             </p>
 
             <dl className="reveal mt-14 grid grid-cols-2 gap-y-6 md:grid-cols-4">
@@ -276,19 +278,19 @@ export default function Storefront({ products }: { products: Product[] }) {
             <div className="mono md:col-span-2">02 — How it&apos;s made</div>
             <div className="md:col-span-5">
               <h2 className="display reveal text-5xl md:text-7xl">
-                The oven is lit at <span className="italic-display">four-thirty.</span>
+                A round takes <span className="italic-display">50 to 60 minutes.</span>
               </h2>
               <p className="reveal mt-8 max-w-lg text-xl leading-relaxed text-ink-soft">
-                No mixers, no timers. The baker knows the dough is ready when it stops sticking to
-                her palms, and the bread is done when the kitchen smells right.
+                No factory line, no shortcuts. Azra knows the dough is ready by touch, then bakes
+                each round at home in a bukhari heater or oven until it is deeply golden.
               </p>
               <ol className="reveal mt-14">
                 {[
-                  ["04:30", "Knead", "Flour, water, salt and yesterday's starter, worked by hand for twenty minutes."],
-                  ["05:10", "Rest", "Covered with a cloth near the stove. The dough doubles while the tea brews."],
-                  ["05:40", "Shape & score", "Rounded, pressed flat with the heel of the hand, then cut in parallel lines and one ring."],
-                  ["06:00", "Bake", "Into the oven on a hot stone. Twenty-five minutes. Turned once."],
-                  ["06:30", "Out", "Wrapped in paper while still hot. On the motorbike by seven."],
+                  ["01", "Mix", "White flour, water and a little salt, brought together by hand."],
+                  ["02", "Rest", "The dough rests covered until it feels soft and ready to shape."],
+                  ["03", "Shape & score", "Pressed into a round by hand, then scored across the top."],
+                  ["04", "Bake", "Baked in a bukhari heater or oven for 50 to 60 minutes."],
+                  ["05", "Share", "Wrapped while warm and enjoyed with Hunza tea any time of day."],
                 ].map(([time, title, body], i) => (
                   <li key={time} className="rule grid grid-cols-[4rem_1fr] gap-x-4 py-6">
                     <span className="mono pt-2">{time}</span>
@@ -330,13 +332,13 @@ export default function Storefront({ products }: { products: Product[] }) {
             <figure className="reveal mt-14">
               <img
                 src="https://images.pexels.com/photos/28319618/pexels-photo-28319618.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200"
-                alt="Karimabad, Hunza valley in summer"
+                alt="A Hunza valley landscape"
                 className="aspect-[16/10] w-full object-cover grayscale-[20%] sepia-[25%]"
                 loading="lazy"
               />
               <figcaption className="mono mt-3 flex justify-between text-ink-soft">
-                <span>Karimabad, from above Baltit</span>
-                <span>Photo · Nauman Hunzai</span>
+                <span>A morning in Hunza</span>
+                <span>Hunza valley</span>
               </figcaption>
             </figure>
           </div>
@@ -352,8 +354,8 @@ export default function Storefront({ products }: { products: Product[] }) {
               Written on the wall, <span className="italic-display">same as at the shop.</span>
             </h2>
             <p className="reveal mt-6 max-w-lg text-lg text-ink-soft">
-              Prices in Pakistani rupees. Delivery is free within central Hunza; for Gulmit and
-              beyond we add a little for petrol and tell you first.
+              Prices are in Pakistani rupees. Putok is made at home in Chamangul, Gulmit Gojal,
+              and delivery details are confirmed with you before baking.
             </p>
 
             <div className="reveal rule-thick mt-14">
@@ -581,7 +583,7 @@ export default function Storefront({ products }: { products: Product[] }) {
                   disabled={submitting}
                   className="order-submit w-full rounded-full border border-apricot px-7 py-5 text-xl md:w-auto"
                 >
-                  {submitting ? "Sending to the bakery…" : `Place order · ${rs(total)}`}
+                  {submitting ? "Sending to Azra…" : `Place order · ${rs(total)}`}
                 </button>
               </form>}
             </div>
@@ -593,19 +595,19 @@ export default function Storefront({ products }: { products: Product[] }) {
       <footer data-scene className="pointer-events-auto relative z-30 mx-auto flex min-h-[80vh] max-w-[1400px] flex-col justify-between px-6 pb-8 pt-24 md:px-10">
         <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-4">
-            <div className="mono text-ink-soft">Bakery</div>
+            <div className="mono text-ink-soft">Home-made Putok by Azra</div>
             <p className="mt-2 text-lg">
-              Behind the old polo ground,
+              Chamangul,
               <br />
-              Karimabad, Hunza 15700
+              Gulmit Gojal, Hunza
             </p>
           </div>
           <div className="md:col-span-4">
             <div className="mono text-ink-soft">Hours</div>
             <p className="mt-2 text-lg">
-              Baking 04:30 – 07:00
+              Baked 50–60 minutes in a bukhari heater or oven
               <br />
-              Shop open 07:00 – 11:00, or until it&apos;s gone
+              Enjoy with Hunza tea in the morning or any time of day
             </p>
           </div>
           <div className="md:col-span-4">

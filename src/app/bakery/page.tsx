@@ -35,7 +35,7 @@ export default async function BakeryPage() {
 
       <div className="mt-14 grid gap-8 md:grid-cols-12 md:items-end">
         <h1 className="display text-5xl md:col-span-7 md:text-7xl">
-          Tomorrow&apos;s <span className="italic-display text-ink-soft">baking list.</span>
+          Azra&apos;s <span className="italic-display text-ink-soft">Putok orders.</span>
         </h1>
         <dl className="grid grid-cols-3 gap-6 md:col-span-5">
           {[

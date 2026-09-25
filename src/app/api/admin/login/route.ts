@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { ADMIN_EMAILS, ADMIN_PASSWORD, isAdminEmail } from "@/lib/supabase";
+import { ADMIN_PASSWORD, isAdminEmail } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       maxAge: 60 * 60 * 12,
     });
 
-    return Response.json({ ok: true, email, allowed: ADMIN_EMAILS });
+    return Response.json({ ok: true });
   } catch (error) {
     console.error("Admin login error:", error);
     return Response.json({ error: "Unable to log in right now." }, { status: 500 });

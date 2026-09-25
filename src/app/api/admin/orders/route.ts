@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { getAllOrders } from "@/db/queries";
-import { ADMIN_EMAILS, isAdminEmail, supabaseAdmin } from "@/lib/supabase";
+import { isAdminEmail, supabaseAdmin } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
