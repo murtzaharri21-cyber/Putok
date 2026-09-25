@@ -1,8 +1,6 @@
 import Link from "next/link";
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { assets } from "@/db/schema";
 import { getAllOrders } from "@/db/queries";
+import { getAsset } from "@/lib/assets";
 import Ledger from "./Ledger";
 import PhotoUpload from "./PhotoUpload";
 
@@ -10,10 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function BakeryPage() {
   const orders = await getAllOrders();
-  const [photo] = await db
-    .select({ updatedAt: assets.updatedAt })
-    .from(assets)
-    .where(eq(assets.key, "putok-photo"));
+  const photo = await getAsset("putok-photo");
   const today = new Date();
   const open = orders.filter((o) => !["delivered", "cancelled"].includes(o.status));
   const rounds = open.reduce(

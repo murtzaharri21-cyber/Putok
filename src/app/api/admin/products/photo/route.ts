@@ -1,8 +1,6 @@
 import { cookies } from "next/headers";
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { assets } from "@/db/schema";
 import { isAdminEmail } from "@/lib/supabase";
+import { deleteAsset, saveAsset } from "@/lib/assets";
 
 export const dynamic = "force-dynamic";
 
@@ -24,15 +22,12 @@ export async function POST(req: Request) {
 
     const buf = Buffer.from(await file.arrayBuffer());
     const now = new Date();
-    await db.insert(assets).values({
+    await saveAsset({
       key: `product-photo-${productId}`,
       mime: file.type,
       data: buf.toString("base64"),
       bytes: buf.length,
       updatedAt: now,
-    }).onConflictDoUpdate({
-      target: assets.key,
-      set: { mime: file.type, data: buf.toString("base64"), bytes: buf.length, updatedAt: now },
     });
 
     return Response.json({ ok: true, version: now.getTime() });
@@ -46,6 +41,6 @@ export async function DELETE(req: Request) {
   const email = (await cookies()).get("putok_admin_session")?.value;
   if (!isAdminEmail(email)) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const { productId } = await req.json().catch(() => ({}));
-  await db.delete(assets).where(eq(assets.key, `product-photo-${Number(productId)}`));
+  await deleteAsset(`product-photo-${Number(productId)}`);
   return Response.json({ ok: true });
 }

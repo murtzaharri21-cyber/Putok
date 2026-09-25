@@ -1,13 +1,11 @@
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { assets } from "@/db/schema";
+import { getAsset } from "@/lib/assets";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await ctx.params;
-    const [row] = await db.select().from(assets).where(eq(assets.key, `product-photo-${Number(id)}`));
+    const row = await getAsset(`product-photo-${Number(id)}`);
     if (!row) return new Response(null, { status: 404 });
     const data = Buffer.from(row.data, "base64");
     return new Response(new Uint8Array(data), {

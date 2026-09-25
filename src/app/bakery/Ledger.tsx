@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ORDER_STATUSES, type OrderItem } from "@/db/schema";
 import { STATUS_LABELS } from "@/lib/status";
+import { isValidWhatsAppNumber, whatsappUrl } from "@/lib/whatsapp";
 
 type Row = {
   id: number;
@@ -73,7 +74,19 @@ export default function Ledger({ initial }: { initial: Row[] }) {
             </div>
             <div>
               <div className="display text-2xl">{o.customerName}</div>
-              <div className="text-ink-soft">{o.phone}</div>
+              {isValidWhatsAppNumber(o.phone) ? (
+                <a
+                  href={whatsappUrl(o.phone)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-ink-soft underline decoration-apricot underline-offset-4 hover:text-ink"
+                  aria-label={`Message ${o.customerName} on WhatsApp`}
+                >
+                  {o.phone}
+                </a>
+              ) : (
+                <div className="text-ink-soft">{o.phone}</div>
+              )}
               <div className="mt-1 text-sm text-ink-soft">
                 <strong className="text-ink">{o.village}</strong> · {o.address}
               </div>

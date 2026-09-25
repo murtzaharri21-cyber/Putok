@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { orderItems, orders, products } from "@/db/schema";
 import { ensureSeeded, getAllOrders } from "@/db/queries";
 import { hasSupabaseServerConfig, supabaseAdmin } from "@/lib/supabase";
+import { isValidWhatsAppNumber, normalizeWhatsAppNumber } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
     const body = await req.json();
 
     const customerName = String(body.customerName ?? "").trim();
-    const phone = String(body.phone ?? "").trim();
+    const phone = normalizeWhatsAppNumber(String(body.phone ?? ""));
     const village = String(body.village ?? "").trim();
     const address = String(body.address ?? "").trim();
     const deliverySlot = String(body.deliverySlot ?? "").trim();
@@ -54,8 +55,8 @@ export async function POST(req: Request) {
     if (customerName.length < 2) {
       return Response.json({ error: "Please tell us your name." }, { status: 400 });
     }
-    if (!/^[0-9+\-\s()]{7,20}$/.test(phone)) {
-      return Response.json({ error: "That phone number doesn't look right." }, { status: 400 });
+    if (!isValidWhatsAppNumber(phone)) {
+      return Response.json({ error: "Enter a valid Pakistani WhatsApp number, for example 03001234567." }, { status: 400 });
     }
     if (!VILLAGES.has(village)) {
       return Response.json({ error: "Pick a village we deliver to." }, { status: 400 });

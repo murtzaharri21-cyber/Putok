@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { isValidWhatsAppNumber, whatsappUrl } from "@/lib/whatsapp";
 
 const ORDER_STATUS_OPTIONS = [
   "received",
@@ -52,6 +53,8 @@ export default function AdminPage() {
   const [productError, setProductError] = useState("");
   const [photoMessage, setPhotoMessage] = useState("");
   const [productPhotoMessage, setProductPhotoMessage] = useState<Record<number, string>>({});
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [whatsappMessage, setWhatsappMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -64,6 +67,11 @@ export default function AdminPage() {
         if (productRes.ok) {
           const productData = await productRes.json();
           setProducts(productData.products ?? []);
+        }
+        const contactRes = await fetch("/api/admin/contact", { cache: "no-store" });
+        if (contactRes.ok) {
+          const contactData = await contactRes.json();
+          setWhatsappNumber(contactData.number ?? "");
         }
         setIsLoggedIn(true);
       } else {
@@ -161,6 +169,19 @@ export default function AdminPage() {
       [productId]: res.ok ? "Photo updated" : data.error ?? "Upload failed",
     }));
     event.target.value = "";
+  };
+
+  const saveWhatsappNumber = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setWhatsappMessage("");
+    const res = await fetch("/api/admin/contact", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ number: whatsappNumber }),
+    });
+    const data = await res.json();
+    setWhatsappMessage(res.ok ? "WhatsApp number updated." : data.error ?? "Could not update the number.");
+    if (res.ok) setWhatsappNumber(data.number);
   };
 
   const handleStatusChange = async (id: number, status: string) => {
@@ -267,6 +288,21 @@ export default function AdminPage() {
           </label>
           {photoMessage && <p className="mt-4 text-sm text-ink-soft">{photoMessage}</p>}
         </div>
+
+        <form onSubmit={saveWhatsappNumber} className="rounded-2xl border border-ink/15 bg-white p-6">
+          <h2 className="display text-3xl">WhatsApp contact</h2>
+          <p className="mt-3 text-ink-soft">This number appears on the storefront contact button.</p>
+          <input
+            type="tel"
+            value={whatsappNumber}
+            onChange={(event) => setWhatsappNumber(event.target.value)}
+            placeholder="03469586026"
+            className="mt-5 w-full rounded-lg border border-ink/20 bg-paper px-3 py-2"
+            required
+          />
+          {whatsappMessage && <p className="mt-3 text-sm text-ink-soft">{whatsappMessage}</p>}
+          <button className="btn-ink mt-4 rounded-full px-5 py-3">Save WhatsApp number</button>
+        </form>
       </section>
 
       <section className="mb-10 rounded-2xl border border-ink/15 bg-white p-6">
@@ -314,7 +350,19 @@ export default function AdminPage() {
                 </td>
                 <td className="px-4 py-4">
                   <div>{order.customer_name}</div>
-                  <div className="mono text-ink-soft">{order.phone}</div>
+                  {isValidWhatsAppNumber(order.phone) ? (
+                    <a
+                      href={whatsappUrl(order.phone)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mono text-ink-soft underline decoration-apricot underline-offset-4 hover:text-ink"
+                      aria-label={`Message ${order.customer_name} on WhatsApp`}
+                    >
+                      {order.phone}
+                    </a>
+                  ) : (
+                    <div className="mono text-ink-soft">{order.phone}</div>
+                  )}
                 </td>
                 <td className="px-4 py-4">
                   <ul className="space-y-1">

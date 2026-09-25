@@ -1,16 +1,22 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { assets } from "@/db/schema";
 import { cookies } from "next/headers";
 import { isAdminEmail } from "@/lib/supabase";
+import { deleteAsset, getAsset, saveAsset } from "@/lib/assets";
 
 export const dynamic = "force-dynamic";
 
 const KEY = "putok-photo";
 const MAX_BYTES = 12 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp"]);
+const FALLBACK_TEXTURE = Buffer.from(`
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+    <rect width="128" height="128" fill="#f5e4b7"/>
+    <circle cx="64" cy="64" r="54" fill="#c9823f"/>
+    <circle cx="64" cy="64" r="47" fill="#e9b567"/>
+    <circle cx="64" cy="64" r="35" fill="#f3cc83"/>
+    <path d="M64 18v92M18 64h92M31 31l66 66M97 31 31 97" stroke="#b87034" stroke-width="4" stroke-linecap="round" opacity=".65"/>
+    <circle cx="64" cy="64" r="9" fill="#d8944d"/>
+  </svg>
+`.trim());
 
 const noStore = {
   "Cache-Control": "no-store, max-age=0",
@@ -18,7 +24,7 @@ const noStore = {
 
 export async function GET() {
   try {
-    const [row] = await db.select().from(assets).where(eq(assets.key, KEY));
+    const row = await getAsset(KEY);
     if (row) {
       const buf = Buffer.from(row.data, "base64");
       return new Response(new Uint8Array(buf), {
@@ -34,12 +40,10 @@ export async function GET() {
   } catch (err) {
     console.error(err);
   }
-  // Fallback to the bundled photo
-  const file = await readFile(path.join(process.cwd(), "public", "textures", "putok-top.jpg"));
-  return new Response(new Uint8Array(file), {
+  return new Response(new Uint8Array(FALLBACK_TEXTURE), {
     headers: {
-      "Content-Type": "image/jpeg",
-      "Content-Length": String(file.length),
+      "Content-Type": "image/svg+xml",
+      "Content-Length": String(FALLBACK_TEXTURE.length),
       "X-Putok-Source": "fallback",
       ...noStore,
     },
@@ -67,13 +71,7 @@ export async function POST(req: Request) {
     const buf = Buffer.from(await file.arrayBuffer());
     const data = buf.toString("base64");
     const now = new Date();
-    await db
-      .insert(assets)
-      .values({ key: KEY, mime, data, bytes: buf.length, updatedAt: now })
-      .onConflictDoUpdate({
-        target: assets.key,
-        set: { mime, data, bytes: buf.length, updatedAt: now },
-      });
+    await saveAsset({ key: KEY, mime, data, bytes: buf.length, updatedAt: now });
     return Response.json({ ok: true, bytes: buf.length, version: now.getTime() });
   } catch (err) {
     console.error(err);
@@ -84,15 +82,12 @@ export async function POST(req: Request) {
 export async function DELETE() {
   const email = (await cookies()).get("putok_admin_session")?.value;
   if (!isAdminEmail(email)) return Response.json({ error: "Unauthorized" }, { status: 401 });
-  await db.delete(assets).where(eq(assets.key, KEY));
+  await deleteAsset(KEY);
   return Response.json({ ok: true });
 }
 
 export async function HEAD() {
-  const [row] = await db
-    .select({ updatedAt: assets.updatedAt, bytes: assets.bytes })
-    .from(assets)
-    .where(eq(assets.key, KEY));
+  const row = await getAsset(KEY);
   return new Response(null, {
     headers: {
       "X-Putok-Source": row ? "upload" : "fallback",

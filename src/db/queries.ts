@@ -55,6 +55,8 @@ const CATALOGUE = [
 
 let seeded = false;
 
+export type OrderWithItems = Order & { items: OrderItem[] };
+
 export async function ensureSeeded() {
   if (seeded) return;
   const existing = await db.select({ id: products.id }).from(products).limit(1);
@@ -65,6 +67,25 @@ export async function ensureSeeded() {
 }
 
 export async function getProducts(): Promise<Product[]> {
+  if (supabaseAdmin) {
+    const { data, error } = await supabaseAdmin
+      .from("products")
+      .select("id,slug,name,tagline,pieces,price_pkr,available,sort_order")
+      .eq("available", true)
+      .order("sort_order");
+    if (error) throw new Error(`Supabase product query failed: ${error.message}`);
+    return (data ?? []).map((product) => ({
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      tagline: product.tagline,
+      pieces: product.pieces,
+      pricePkr: product.price_pkr,
+      available: product.available,
+      sortOrder: product.sort_order,
+    }));
+  }
+
   try {
     await ensureSeeded();
     return db
@@ -133,7 +154,44 @@ export async function getOrderByCode(code: string) {
   return { order, items };
 }
 
-export async function getAllOrders() {
+export async function getAllOrders(): Promise<OrderWithItems[]> {
+  if (supabaseAdmin) {
+    const { data, error } = await supabaseAdmin
+      .from("orders")
+      .select("*, order_items(*)")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error(`Supabase orders query failed: ${error.message}`);
+
+    return (data ?? []).map((order) => ({
+      id: order.id,
+      code: order.code,
+      customerName: order.customer_name,
+      phone: order.phone,
+      village: order.village,
+      address: order.address,
+      deliverySlot: order.delivery_slot,
+      notes: order.notes,
+      totalPkr: order.total_pkr,
+      status: order.status,
+      createdAt: new Date(order.created_at),
+      items: (order.order_items ?? []).map((item: {
+        id: number;
+        order_id: number;
+        product_id: number;
+        product_name: string;
+        quantity: number;
+        unit_price_pkr: number;
+      }) => ({
+        id: item.id,
+        orderId: item.order_id,
+        productId: item.product_id,
+        productName: item.product_name,
+        quantity: item.quantity,
+        unitPricePkr: item.unit_price_pkr,
+      })),
+    }));
+  }
+
   const rows = await db.select().from(orders).orderBy(desc(orders.createdAt));
   const items = await db.select().from(orderItems);
   return rows.map((o) => ({
