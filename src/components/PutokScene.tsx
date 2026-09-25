@@ -41,6 +41,7 @@ function Environment() {
     pmrem.compileEquirectangularShader();
     const envScene = new RoomEnvironment();
     const target = pmrem.fromScene(envScene, 0.04);
+    // eslint-disable-next-line react-hooks/immutability
     scene.environment = target.texture;
     scene.environmentIntensity = 0.85;
     return () => {
@@ -96,19 +97,16 @@ function Rig() {
   const keyLight = useRef<THREE.DirectionalLight>(null);
   const { size } = useThree();
 
-  const state = useMemo(
-    () => ({
-      pos: new THREE.Vector3(POSES[0].pos[0], POSES[0].pos[1], POSES[0].pos[2]),
-      quat: QUATS[0].clone(),
-      scale: POSES[0].scale,
-      targetPos: new THREE.Vector3(),
-      targetQuat: new THREE.Quaternion(),
-      tilt: new THREE.Vector2(),
-      spin: 0,
-      prevScene: 0,
-    }),
-    [],
-  );
+  const state = useRef({
+    pos: new THREE.Vector3(POSES[0].pos[0], POSES[0].pos[1], POSES[0].pos[2]),
+    quat: QUATS[0].clone(),
+    scale: POSES[0].scale,
+    targetPos: new THREE.Vector3(),
+    targetQuat: new THREE.Quaternion(),
+    tilt: new THREE.Vector2(),
+    spin: 0,
+    prevScene: 0,
+  });
 
   useFrame((_, dtRaw) => {
     const dt = Math.min(dtRaw, 1 / 30);
@@ -143,35 +141,36 @@ function Rig() {
       const base = THREE.MathUtils.lerp(0.42, 0.58, heroK);
       targetScale = THREE.MathUtils.lerp(base, 0.82, footerK);
     }
-    state.targetPos.set(x, y, z);
-    state.targetQuat.copy(QUATS[i]).slerp(QUATS[i + 1], f);
+    const sCurrent = state.current;
+    sCurrent.targetPos.set(x, y, z);
+    sCurrent.targetQuat.copy(QUATS[i]).slerp(QUATS[i + 1], f);
 
     const lam = 5.5;
-    state.pos.x = THREE.MathUtils.damp(state.pos.x, state.targetPos.x, lam, dt);
-    state.pos.y = THREE.MathUtils.damp(state.pos.y, state.targetPos.y, lam, dt);
-    state.pos.z = THREE.MathUtils.damp(state.pos.z, state.targetPos.z, lam, dt);
-    state.quat.slerp(state.targetQuat, 1 - Math.exp(-lam * dt));
-    state.scale = THREE.MathUtils.damp(state.scale, targetScale, lam, dt);
+    sCurrent.pos.x = THREE.MathUtils.damp(sCurrent.pos.x, sCurrent.targetPos.x, lam, dt);
+    sCurrent.pos.y = THREE.MathUtils.damp(sCurrent.pos.y, sCurrent.targetPos.y, lam, dt);
+    sCurrent.pos.z = THREE.MathUtils.damp(sCurrent.pos.z, sCurrent.targetPos.z, lam, dt);
+    sCurrent.quat.slerp(sCurrent.targetQuat, 1 - Math.exp(-lam * dt));
+    sCurrent.scale = THREE.MathUtils.damp(sCurrent.scale, targetScale, lam, dt);
 
-    const dScene = s - state.prevScene;
-    state.prevScene = s;
-    state.spin += dScene * Math.PI * 1.6 + dt * 0.25;
+    const dScene = s - sCurrent.prevScene;
+    sCurrent.prevScene = s;
+    sCurrent.spin += dScene * Math.PI * 1.6 + dt * 0.25;
 
-    state.tilt.x = THREE.MathUtils.damp(state.tilt.x, scrollState.pointerY * 0.18, 4, dt);
-    state.tilt.y = THREE.MathUtils.damp(state.tilt.y, scrollState.pointerX * 0.22, 4, dt);
+    sCurrent.tilt.x = THREE.MathUtils.damp(sCurrent.tilt.x, scrollState.pointerY * 0.18, 4, dt);
+    sCurrent.tilt.y = THREE.MathUtils.damp(sCurrent.tilt.y, scrollState.pointerX * 0.22, 4, dt);
 
     const t = performance.now() / 1000;
     if (outer.current) {
-      outer.current.position.set(state.pos.x, state.pos.y + Math.sin(t * 1.1) * 0.035, state.pos.z);
-      outer.current.rotation.set(state.tilt.x, state.tilt.y, 0);
-      outer.current.scale.setScalar(state.scale);
+      outer.current.position.set(sCurrent.pos.x, sCurrent.pos.y + Math.sin(t * 1.1) * 0.035, sCurrent.pos.z);
+      outer.current.rotation.set(sCurrent.tilt.x, sCurrent.tilt.y, 0);
+      outer.current.scale.setScalar(sCurrent.scale);
     }
-    if (inner.current) inner.current.quaternion.copy(state.quat);
-    if (spinner.current) spinner.current.rotation.y = state.spin;
+    if (inner.current) inner.current.quaternion.copy(sCurrent.quat);
+    if (spinner.current) spinner.current.rotation.y = sCurrent.spin;
     // key light follows the loaf a little so highlights never fall off the edge
     if (keyLight.current) {
-      keyLight.current.position.set(state.pos.x + 2.6, 4.5, 4.2);
-      keyLight.current.target.position.copy(state.pos);
+      keyLight.current.position.set(sCurrent.pos.x + 2.6, 4.5, 4.2);
+      keyLight.current.target.position.copy(sCurrent.pos);
       keyLight.current.target.updateMatrixWorld();
     }
   });
