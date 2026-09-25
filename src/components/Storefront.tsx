@@ -20,7 +20,6 @@ const VILLAGES = [
   "Murtazabad",
   "Hassanabad",
   "Dorkhan",
-  "Gulmit",
   "Other",
 ];
 

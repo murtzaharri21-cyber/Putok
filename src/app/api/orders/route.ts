@@ -17,7 +17,6 @@ const VILLAGES = new Set([
   "Murtazabad",
   "Hassanabad",
   "Dorkhan",
-  "Gulmit",
   "Other",
 ]);
 

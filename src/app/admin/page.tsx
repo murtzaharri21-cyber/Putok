@@ -91,15 +91,7 @@ export default function AdminPage() {
       return;
     }
 
-    setIsLoggedIn(true);
-    const orderRes = await fetch("/api/admin/orders", { cache: "no-store" });
-    const orderData = await orderRes.json();
-    setOrders(orderData.orders ?? []);
-    const productRes = await fetch("/api/admin/products", { cache: "no-store" });
-    if (productRes.ok) {
-      const productData = await productRes.json();
-      setProducts(productData.products ?? []);
-    }
+    window.location.reload();
   };
 
   const saveProduct = async (event: React.FormEvent) => {
