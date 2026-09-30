@@ -41,7 +41,7 @@ export default async function OrderPage({ params }: { params: Promise<{ code: st
         </div>
 
         <div className="md:col-span-5 md:col-start-8">
-          <div className="border border-dashed border-ink/50 p-6 md:p-8">
+          <div className="border border-dashed border-ink/50 p-4 md:p-8">
             <div className="display text-3xl">PUTOK</div>
             <div className="mono mt-1 text-ink-soft">Chamangul · Gulmit Gojal</div>
 

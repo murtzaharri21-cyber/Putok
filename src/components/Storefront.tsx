@@ -98,6 +98,7 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [orderOpen, setOrderOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   /* Scroll -> 3D scene mapping, pointer parallax, reveal-on-scroll */
   useEffect(() => {
@@ -193,18 +194,53 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
       <PutokScene />
 
       {/* Top bar */}
-      <header className="pointer-events-auto relative z-30 mx-auto flex max-w-[1400px] items-center justify-between px-6 pt-6 md:px-10">
-        <div className="mono">Chamangul, Gulmit Gojal</div>
-        <nav className="mono hidden gap-8 md:flex">
-          <a href="#what" className="hover:text-apricot">What it is</a>
-          <a href="#made" className="hover:text-apricot">How it&apos;s made</a>
-          <a href="#prices" className="hover:text-apricot">Price list</a>
-          <a href="#order" className="hover:text-apricot">Order</a>
-          <Link href="/admin" className="hover:text-apricot">Admin</Link>
-        </nav>
-        <a href="#order" className="mono rounded-full border border-ink px-4 py-2 hover:bg-ink hover:text-paper">
-          Basket · {pieces}
-        </a>
+      <header className="pointer-events-auto relative z-30 mx-auto max-w-[1400px] px-6 pt-6 md:px-10">
+        <div className="flex items-center justify-between">
+          <div className="mono">Chamangul, Gulmit Gojal</div>
+          <nav className="mono hidden gap-8 md:flex">
+            <a href="#what" className="hover:text-apricot">What it is</a>
+            <a href="#made" className="hover:text-apricot">How it&apos;s made</a>
+            <a href="#prices" className="hover:text-apricot">Price list</a>
+            <a href="#order" className="hover:text-apricot">Order</a>
+            <Link href="/admin" className="hover:text-apricot">Admin</Link>
+          </nav>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileNavOpen}
+              className="mono flex h-9 w-9 items-center justify-center rounded-full border border-ink hover:bg-ink hover:text-paper md:hidden"
+              onClick={() => setMobileNavOpen((o) => !o)}
+            >
+              {mobileNavOpen ? "✕" : "☰"}
+            </button>
+            <a href="#order" className="mono rounded-full border border-ink px-4 py-2 hover:bg-ink hover:text-paper">
+              Basket · {pieces}
+            </a>
+          </div>
+        </div>
+
+        {/* Mobile nav drawer */}
+        {mobileNavOpen && (
+          <nav className="mono mt-4 flex flex-col gap-0 overflow-hidden rounded-xl border border-ink/20 bg-paper shadow-md md:hidden">
+            {[
+              { href: "#what", label: "What it is" },
+              { href: "#made", label: "How it's made" },
+              { href: "#prices", label: "Price list" },
+              { href: "#order", label: "Order" },
+              { href: "/admin", label: "Admin" },
+            ].map(({ href, label }) => (
+              <a
+                key={href}
+                href={href}
+                className="border-b border-ink/10 px-5 py-4 last:border-b-0 hover:bg-ink/5 hover:text-apricot"
+                onClick={() => setMobileNavOpen(false)}
+              >
+                {label}
+              </a>
+            ))}
+          </nav>
+        )}
       </header>
 
       {/* 0 — HERO */}
@@ -222,7 +258,7 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
         <h1 className="display text-[22vw] leading-[0.82] md:text-[17vw]">
           PUT<span className="outline-text">O</span>K
         </h1>
-        <div className="mt-8 grid gap-8 md:grid-cols-12 md:items-end">
+        <div className="mt-4 grid gap-8 md:mt-8 md:grid-cols-12 md:items-end">
           <p className="display text-3xl md:col-span-6 md:text-5xl">
             White flour, water, salt. <br />
             <span className="italic-display text-ink-soft">Azra does the rest.</span>
@@ -233,10 +269,10 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
               bukhari heater or oven for 50 to 60 minutes, then delivered for breakfast.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-4">
-              <a href="#order" className="btn-ink rounded-full px-7 py-4 text-lg">
+              <a href="#order" className="btn-ink w-full rounded-full px-7 py-4 text-lg sm:w-auto">
                 Order for tomorrow →
               </a>
-              <span className="mono text-ink-soft">↓ scroll to turn it over</span>
+              <span className="mono text-xs text-ink-soft sm:text-base">↓ scroll to turn it over</span>
             </div>
           </div>
         </div>
@@ -373,50 +409,58 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
                 return (
                   <div
                     key={p.id}
-                    className={`rule grid grid-cols-[2rem_1fr_auto] items-center gap-x-4 gap-y-3 py-6 md:grid-cols-[3rem_1fr_7rem_8rem_auto] ${
+                    className={`rule grid grid-cols-1 gap-y-3 py-6 md:grid-cols-[3rem_1fr_7rem_8rem_auto] md:items-center md:gap-x-4 ${
                       qty > 0 ? "bg-apricot/10" : ""
                     }`}
                   >
-                    <span className="mono text-ink-soft">{String(i + 1).padStart(2, "0")}</span>
-                    <div>
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={`/api/products/${p.id}/photo`}
-                          alt=""
-                          onError={(event) => { event.currentTarget.style.display = "none"; }}
-                          className="h-12 w-12 rounded-full object-cover"
-                        />
-                        <div className="display text-3xl md:text-4xl">{p.name}</div>
+                    {/* Row 1: index + product name/description */}
+                    <div className="flex items-start gap-4 md:contents">
+                      <span className="mono shrink-0 pt-1 text-ink-soft md:pt-0">{String(i + 1).padStart(2, "00")}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={`/api/products/${p.id}/photo`}
+                            alt=""
+                            onError={(event) => { event.currentTarget.style.display = "none"; }}
+                            className="h-12 w-12 shrink-0 rounded-full object-cover"
+                          />
+                          <div className="display text-3xl md:text-4xl">{p.name}</div>
+                        </div>
+                        <div className="mt-1 text-ink-soft">{p.tagline}</div>
                       </div>
-                      <div className="mt-1 text-ink-soft">{p.tagline}</div>
-                    </div>
-                    <div className="mono hidden text-ink-soft md:block">
-                      {p.pieces} {p.pieces === 1 ? "round" : "rounds"}
-                    </div>
-                    <div className="col-start-2 md:col-auto">
-                      <div className="display text-2xl md:text-3xl">{rs(qty > 0 ? qty * p.pricePkr : p.pricePkr)}</div>
-                      <div className="mono mt-1 text-ink-soft">
-                        {qty > 0 ? `${qty} × ${rs(p.pricePkr)}` : `${rs(p.pricePkr)} each`}
+                      {/* pieces count — desktop only, sits in col 3 of the md grid */}
+                      <div className="mono hidden text-ink-soft md:block">
+                        {p.pieces} {p.pieces === 1 ? "round" : "rounds"}
                       </div>
                     </div>
-                    <div className="col-start-3 row-start-1 flex items-center gap-2 md:col-auto md:row-auto">
-                      <button
-                        type="button"
-                        aria-label={`Remove one ${p.name}`}
-                        className="qty-btn"
-                        onClick={() => setQty(p.id, qty - 1)}
-                      >
-                        −
-                      </button>
-                      <span className="display w-8 text-center text-2xl tabular-nums">{qty}</span>
-                      <button
-                        type="button"
-                        aria-label={`Add one ${p.name}`}
-                        className="qty-btn"
-                        onClick={() => setQty(p.id, qty + 1)}
-                      >
-                        +
-                      </button>
+
+                    {/* Row 2: price + qty controls (mobile: inline flex; desktop: separate grid cols) */}
+                    <div className="flex items-center justify-between md:contents">
+                      <div className="md:col-auto">
+                        <div className="display text-2xl md:text-3xl">{rs(qty > 0 ? qty * p.pricePkr : p.pricePkr)}</div>
+                        <div className="mono mt-1 text-ink-soft">
+                          {qty > 0 ? `${qty} × ${rs(p.pricePkr)}` : `${rs(p.pricePkr)} each`}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 md:col-auto">
+                        <button
+                          type="button"
+                          aria-label={`Remove one ${p.name}`}
+                          className="qty-btn"
+                          onClick={() => setQty(p.id, qty - 1)}
+                        >
+                          −
+                        </button>
+                        <span className="display w-8 text-center text-2xl tabular-nums">{qty}</span>
+                        <button
+                          type="button"
+                          aria-label={`Add one ${p.name}`}
+                          className="qty-btn"
+                          onClick={() => setQty(p.id, qty + 1)}
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );

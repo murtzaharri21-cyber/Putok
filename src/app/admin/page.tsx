@@ -322,7 +322,7 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <div className="overflow-hidden rounded-2xl border border-ink/15 bg-white">
+      <div className="overflow-x-auto overflow-hidden rounded-2xl border border-ink/15 bg-white">
         <table className="min-w-full text-left text-sm">
           <thead className="bg-paper-deep mono text-ink-soft">
             <tr>
