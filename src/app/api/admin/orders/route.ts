@@ -7,19 +7,46 @@ export const dynamic = "force-dynamic";
 async function loadOrders() {
   if (supabaseAdmin) {
     try {
-      const { data, error } = await supabaseAdmin.from("orders").select("*, order_items(*)");
+      const { data, error } = await supabaseAdmin
+        .from("orders")
+        .select("*, order_items(*)")
+        .order("created_at", { ascending: false });
+
       if (!error && data) {
         return data.map((row) => ({
           ...row,
-          items: row.order_items ?? [],
+          customer_name: row.customer_name ?? row.customerName,
+          total_pkr: row.total_pkr ?? row.totalPkr,
+          created_at: row.created_at ?? row.createdAt,
+          delivery_slot: row.delivery_slot ?? row.deliverySlot,
+          items: (row.order_items ?? row.items ?? []).map((item: any) => ({
+            ...item,
+            product_name: item.product_name ?? item.productName,
+            unit_price_pkr: item.unit_price_pkr ?? item.unitPricePkr,
+          })),
         }));
       }
-    } catch {
-      // fallback below
+      if (error) {
+        console.error("Supabase loadOrders error:", error);
+      }
+    } catch (e) {
+      console.error("Supabase loadOrders exception:", e);
     }
   }
 
-  return await getAllOrders();
+  const all = await getAllOrders();
+  return all.map((row: any) => ({
+    ...row,
+    customer_name: row.customer_name ?? row.customerName,
+    total_pkr: row.total_pkr ?? row.totalPkr,
+    created_at: row.created_at ?? row.createdAt,
+    delivery_slot: row.delivery_slot ?? row.deliverySlot,
+    items: (row.items ?? []).map((item: any) => ({
+      ...item,
+      product_name: item.product_name ?? item.productName,
+      unit_price_pkr: item.unit_price_pkr ?? item.unitPricePkr,
+    })),
+  }));
 }
 
 export async function GET() {

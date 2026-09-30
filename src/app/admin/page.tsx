@@ -56,6 +56,33 @@ export default function AdminPage() {
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [whatsappMessage, setWhatsappMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [statusUpdateMessage, setStatusUpdateMessage] = useState("");
+
+  const formatOrderDate = (d: any) => {
+    if (!d) return "";
+    try {
+      const parsed = new Date(d);
+      return isNaN(parsed.getTime()) ? String(d) : parsed.toLocaleString("en-GB");
+    } catch {
+      return String(d);
+    }
+  };
+
+  const fetchOrders = async () => {
+    setIsRefreshing(true);
+    try {
+      const res = await fetch("/api/admin/orders", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        setOrders(data.orders ?? []);
+      }
+    } catch (err) {
+      console.error("Failed to refresh orders:", err);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   useEffect(() => {
     const checkSession = async () => {
@@ -82,6 +109,14 @@ export default function AdminPage() {
 
     checkSession();
   }, []);
+
+  useEffect(() => {
+    if (!isLoggedIn) return;
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 20000);
+    return () => clearInterval(interval);
+  }, [isLoggedIn]);
 
   const signIn = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -219,23 +254,6 @@ export default function AdminPage() {
           <p className="mt-3 text-ink-soft">Sign in with an authorized admin account.</p>
 
           <form onSubmit={signIn} className="mt-8 space-y-4">
-            <div className="flex flex-wrap items-center gap-1.5 p-3 rounded-xl border border-ink/10 bg-paper/60 text-xs">
-              <span className="mono text-ink-soft">Approved accounts:</span>
-              <button
-                type="button"
-                onClick={() => setEmail("murtzaharri21@gmail.com")}
-                className="rounded-full bg-white border border-ink/20 px-2.5 py-1 text-ink hover:bg-ink hover:text-white mono transition-colors cursor-pointer"
-              >
-                murtzaharri21@gmail.com
-              </button>
-              <button
-                type="button"
-                onClick={() => setEmail("murtzaharry21@gmail.com")}
-                className="rounded-full bg-white border border-ink/20 px-2.5 py-1 text-ink hover:bg-ink hover:text-white mono transition-colors cursor-pointer"
-              >
-                murtzaharry21@gmail.com
-              </button>
-            </div>
             <div>
               <label className="mb-2 block mono text-sm">Email</label>
               <input
@@ -339,14 +357,37 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <div className="overflow-x-auto overflow-hidden rounded-2xl border border-ink/15 bg-white">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="display text-3xl">Customer orders ({orders.length})</h2>
+          <p className="text-sm text-ink-soft">Incoming orders across Hunza (auto-updates every 20s)</p>
+        </div>
+        <div className="flex items-center gap-3">
+          {statusUpdateMessage && (
+            <span className="text-xs text-green-700 bg-green-50 border border-green-200 px-3 py-1 rounded-full mono">
+              {statusUpdateMessage}
+            </span>
+          )}
+          <button
+            type="button"
+            onClick={fetchOrders}
+            disabled={isRefreshing}
+            className="inline-flex items-center gap-2 rounded-full border border-ink px-4 py-2 text-sm mono hover:bg-ink hover:text-paper transition-colors disabled:opacity-50 cursor-pointer"
+          >
+            <span className={isRefreshing ? "inline-block animate-spin" : ""}>↻</span>
+            {isRefreshing ? "Refreshing..." : "Refresh orders"}
+          </button>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto overflow-hidden rounded-2xl border border-ink/15 bg-white shadow-sm">
         <table className="min-w-full text-left text-sm">
           <thead className="bg-paper-deep mono text-ink-soft">
             <tr>
               <th className="px-4 py-3">Order</th>
               <th className="px-4 py-3">Customer</th>
               <th className="px-4 py-3">Items</th>
-              <th className="px-4 py-3">Address</th>
+              <th className="px-4 py-3">Delivery info</th>
               <th className="px-4 py-3">Status</th>
               <th className="px-4 py-3">Total</th>
             </tr>
@@ -362,43 +403,53 @@ export default function AdminPage() {
             {orders.map((order) => (
               <tr key={order.id} className="border-t border-ink/10 align-top">
                 <td className="px-4 py-4">
-                  <div className="font-bold">{order.code}</div>
-                  <div className="mono text-ink-soft">{new Date(order.created_at).toLocaleString("en-GB")}</div>
+                  <div className="font-bold text-base">{order.code}</div>
+                  <div className="mono text-xs text-ink-soft">{formatOrderDate(order.created_at ?? order.createdAt)}</div>
                 </td>
                 <td className="px-4 py-4">
-                  <div>{order.customer_name}</div>
+                  <div className="font-medium text-ink">{order.customer_name ?? order.customerName}</div>
                   {isValidWhatsAppNumber(order.phone) ? (
                     <a
                       href={whatsappUrl(order.phone)}
                       target="_blank"
                       rel="noreferrer"
-                      className="mono text-ink-soft underline decoration-apricot underline-offset-4 hover:text-ink"
-                      aria-label={`Message ${order.customer_name} on WhatsApp`}
+                      className="mono text-xs text-ink-soft underline decoration-apricot underline-offset-4 hover:text-ink block mt-0.5"
+                      aria-label={`Message ${order.customer_name ?? order.customerName} on WhatsApp`}
                     >
                       {order.phone}
                     </a>
                   ) : (
-                    <div className="mono text-ink-soft">{order.phone}</div>
+                    <div className="mono text-xs text-ink-soft mt-0.5">{order.phone}</div>
                   )}
                 </td>
                 <td className="px-4 py-4">
-                  <ul className="space-y-1">
-                    {(order.items ?? []).map((item: any) => (
-                      <li key={item.id}>
-                        {item.quantity} × {item.product_name}
+                  <ul className="space-y-1 text-xs">
+                    {(order.items ?? []).map((item: any, idx: number) => (
+                      <li key={item.id ?? idx}>
+                        <span className="font-semibold">{item.quantity}×</span> {item.product_name ?? item.productName}
                       </li>
                     ))}
                   </ul>
                 </td>
                 <td className="px-4 py-4">
-                  <div>{order.village}</div>
-                  <div className="max-w-xs text-ink-soft">{order.address}</div>
+                  <div className="font-medium">{order.village}</div>
+                  <div className="max-w-xs text-xs text-ink-soft">{order.address}</div>
+                  {(order.delivery_slot ?? order.deliverySlot) && (
+                    <div className="mt-1 mono text-xs text-ink-soft">
+                      Slot: {order.delivery_slot ?? order.deliverySlot}
+                    </div>
+                  )}
+                  {order.notes && (
+                    <div className="mt-1 text-xs italic text-ink-soft bg-paper/60 p-1.5 rounded border border-ink/5">
+                      "{order.notes}"
+                    </div>
+                  )}
                 </td>
                 <td className="px-4 py-4">
                   <select
                     value={order.status}
                     onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                    className="rounded-lg border border-ink/20 bg-paper px-3 py-2"
+                    className="rounded-lg border border-ink/20 bg-paper px-3 py-1.5 text-xs font-medium cursor-pointer"
                   >
                     {ORDER_STATUS_OPTIONS.map((status) => (
                       <option key={status} value={status}>
@@ -407,7 +458,9 @@ export default function AdminPage() {
                     ))}
                   </select>
                 </td>
-                <td className="px-4 py-4 tabular-nums">Rs {Number(order.total_pkr ?? 0).toLocaleString("en-PK")}</td>
+                <td className="px-4 py-4 tabular-nums font-bold">
+                  Rs {Number(order.total_pkr ?? order.totalPkr ?? 0).toLocaleString("en-PK")}
+                </td>
               </tr>
             ))}
           </tbody>

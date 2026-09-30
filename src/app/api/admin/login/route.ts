@@ -9,19 +9,10 @@ export async function POST(req: Request) {
     const email = String(body.email ?? "").trim().toLowerCase();
     const password = String(body.password ?? "").trim();
 
-    if (!isAdminEmail(email)) {
+    if (!isAdminEmail(email) || (password !== ADMIN_PASSWORD && password !== "PutokAdmin123!")) {
       return Response.json(
         {
-          error: `Invalid admin email. Approved emails are: ${ADMIN_EMAILS.join(", ")}`,
-        },
-        { status: 401 },
-      );
-    }
-
-    if (password !== ADMIN_PASSWORD && password !== "PutokAdmin123!") {
-      return Response.json(
-        {
-          error: "Invalid admin password. Please enter the correct password.",
+          error: "Invalid admin credentials.",
         },
         { status: 401 },
       );
