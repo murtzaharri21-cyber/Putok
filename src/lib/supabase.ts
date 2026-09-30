@@ -5,7 +5,7 @@ export const ADMIN_EMAILS = [
   "murtzaharri21@gmail.com",
 ] as const;
 
-export const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "PutokAdmin123!";
+export const ADMIN_PASSWORD = (process.env.ADMIN_PASSWORD || "").trim() || "PutokAdmin123!";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
 const supabaseAnonKey =
@@ -35,5 +35,11 @@ export const supabaseAdmin =
     : null;
 
 export function isAdminEmail(email: string | null | undefined) {
-  return !!email && ADMIN_EMAILS.some((item) => item === email.trim().toLowerCase());
+  if (!email) return false;
+  const normalized = email.trim().toLowerCase();
+  const envEmails = (process.env.ADMIN_EMAILS || "")
+    .split(",")
+    .map((item) => item.trim().toLowerCase())
+    .filter(Boolean);
+  return ADMIN_EMAILS.some((item) => item.toLowerCase() === normalized) || envEmails.includes(normalized);
 }

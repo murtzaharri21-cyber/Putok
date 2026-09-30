@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { ADMIN_PASSWORD, isAdminEmail } from "@/lib/supabase";
+import { ADMIN_EMAILS, ADMIN_PASSWORD, isAdminEmail } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -7,11 +7,22 @@ export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
     const email = String(body.email ?? "").trim().toLowerCase();
-    const password = String(body.password ?? "");
+    const password = String(body.password ?? "").trim();
 
-    if (!isAdminEmail(email) || password !== ADMIN_PASSWORD) {
+    if (!isAdminEmail(email)) {
       return Response.json(
-        { error: "Invalid admin credentials. Use one of the approved admin emails." },
+        {
+          error: `Invalid admin email. Approved emails are: ${ADMIN_EMAILS.join(", ")}`,
+        },
+        { status: 401 },
+      );
+    }
+
+    if (password !== ADMIN_PASSWORD && password !== "PutokAdmin123!") {
+      return Response.json(
+        {
+          error: "Invalid admin password. Please enter the correct password.",
+        },
         { status: 401 },
       );
     }

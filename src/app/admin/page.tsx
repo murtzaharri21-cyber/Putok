@@ -219,6 +219,23 @@ export default function AdminPage() {
           <p className="mt-3 text-ink-soft">Sign in with an authorized admin account.</p>
 
           <form onSubmit={signIn} className="mt-8 space-y-4">
+            <div className="flex flex-wrap items-center gap-1.5 p-3 rounded-xl border border-ink/10 bg-paper/60 text-xs">
+              <span className="mono text-ink-soft">Approved accounts:</span>
+              <button
+                type="button"
+                onClick={() => setEmail("murtzaharri21@gmail.com")}
+                className="rounded-full bg-white border border-ink/20 px-2.5 py-1 text-ink hover:bg-ink hover:text-white mono transition-colors cursor-pointer"
+              >
+                murtzaharri21@gmail.com
+              </button>
+              <button
+                type="button"
+                onClick={() => setEmail("murtzaharry21@gmail.com")}
+                className="rounded-full bg-white border border-ink/20 px-2.5 py-1 text-ink hover:bg-ink hover:text-white mono transition-colors cursor-pointer"
+              >
+                murtzaharry21@gmail.com
+              </button>
+            </div>
             <div>
               <label className="mb-2 block mono text-sm">Email</label>
               <input
