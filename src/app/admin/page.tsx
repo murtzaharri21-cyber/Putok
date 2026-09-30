@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { isValidWhatsAppNumber, whatsappUrl } from "@/lib/whatsapp";
 
@@ -297,6 +298,31 @@ export default function AdminPage() {
           Logout
         </button>
       </div>
+
+      {/* For the baker quick links */}
+      <section className="mb-8 rounded-2xl border border-apricot/30 bg-apricot/5 p-5">
+        <p className="mono text-xs uppercase tracking-[0.18em] text-ink-soft">For the baker</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          <Link
+            href="/bakery"
+            className="inline-flex items-center gap-2 rounded-full border border-ink px-4 py-2 mono text-sm hover:bg-ink hover:text-paper transition-colors"
+          >
+            Open order ledger →
+          </Link>
+          <Link
+            href="/bakery#photo"
+            className="inline-flex items-center gap-2 rounded-full border border-ink px-4 py-2 mono text-sm hover:bg-ink hover:text-paper transition-colors"
+          >
+            Change putok photo →
+          </Link>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-full border border-ink/30 px-4 py-2 mono text-sm text-ink-soft hover:border-ink hover:text-ink transition-colors"
+          >
+            ← Back to shop front
+          </Link>
+        </div>
+      </section>
 
       <section className="mb-10 grid gap-8 md:grid-cols-2">
         <form onSubmit={saveProduct} className="rounded-2xl border border-ink/15 bg-white p-6">

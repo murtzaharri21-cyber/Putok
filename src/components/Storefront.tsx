@@ -197,11 +197,23 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
       <header className="pointer-events-auto relative z-30 mx-auto max-w-[1400px] px-6 pt-6 md:px-10">
         <div className="flex items-center justify-between">
           <div className="mono">Chamangul, Gulmit Gojal</div>
-          <nav className="mono hidden gap-8 md:flex">
+          <nav className="mono hidden gap-8 md:flex items-center">
             <a href="#what" className="hover:text-apricot">What it is</a>
             <a href="#made" className="hover:text-apricot">How it&apos;s made</a>
             <a href="#prices" className="hover:text-apricot">Price list</a>
             <a href="#order" className="hover:text-apricot">Order</a>
+            {whatsappNumber && (
+              <a
+                href={whatsappUrl(whatsappNumber)}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Contact us on WhatsApp"
+                className="inline-flex items-center gap-2 rounded-full border border-ink/40 px-3 py-1.5 text-sm hover:bg-ink hover:text-paper transition-colors"
+              >
+                <WhatsAppIcon />
+                <span>Contact</span>
+              </a>
+            )}
             <Link href="/admin" className="hover:text-apricot">Admin</Link>
           </nav>
           <div className="flex items-center gap-3">
@@ -239,6 +251,18 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
                 {label}
               </a>
             ))}
+            {whatsappNumber && (
+              <a
+                href={whatsappUrl(whatsappNumber)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-3 border-t border-ink/10 px-5 py-4 hover:bg-ink/5 hover:text-apricot"
+                onClick={() => setMobileNavOpen(false)}
+              >
+                <WhatsAppIcon />
+                Contact us on WhatsApp
+              </a>
+            )}
           </nav>
         )}
       </header>
