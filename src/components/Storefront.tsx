@@ -560,7 +560,7 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
                   <button
                     type="button"
                     onClick={() => setOrderOpen(false)}
-                    className="order-close mono rounded-full border border-paper/50 px-4 py-2 text-paper hover:border-apricot hover:text-apricot"
+                    className="order-close mono min-h-11 rounded-full border border-apricot bg-apricot px-4 py-2 text-ink active:bg-apricot active:text-ink md:border-paper/50 md:bg-transparent md:text-paper md:hover:border-apricot md:hover:text-apricot"
                   >
                     Close form
                   </button>
