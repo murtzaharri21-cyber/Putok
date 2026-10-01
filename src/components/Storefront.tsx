@@ -522,7 +522,18 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
               </p>
 
               {!orderOpen && (
-                <div className="reveal mt-12 w-full max-w-[440px] border border-dashed border-paper/40 p-5 md:max-w-none md:p-8">
+                <div
+                  className="reveal mt-12 w-full max-w-[440px] cursor-pointer border border-dashed border-paper/40 p-5 md:max-w-none md:p-8"
+                  onClick={openOrderForm}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      openOrderForm();
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
                   <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div>
                       <p className="mono text-sm text-paper/60 md:text-base">Ready for tomorrow&apos;s breakfast?</p>
@@ -532,7 +543,10 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
                     </div>
                     <button
                       type="button"
-                      onClick={openOrderForm}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openOrderForm();
+                      }}
                       className="order-cta order-mobile-button w-full rounded-full border border-apricot px-7 py-4 text-lg md:w-auto md:text-xl"
                     >
                       Order now →
