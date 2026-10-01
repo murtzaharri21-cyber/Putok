@@ -522,18 +522,18 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
               </p>
 
               {!orderOpen && (
-                <div className="reveal mt-12 border border-dashed border-paper/40 p-6 md:p-8">
-                  <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                <div className="reveal mt-12 w-full max-w-[440px] border border-dashed border-paper/40 p-5 md:max-w-none md:p-8">
+                  <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div>
-                      <p className="mono text-paper/60">Ready for tomorrow&apos;s breakfast?</p>
-                      <p className="mt-3 text-xl text-paper/80">
+                      <p className="mono text-sm text-paper/60 md:text-base">Ready for tomorrow&apos;s breakfast?</p>
+                      <p className="mt-3 text-base leading-relaxed text-paper/80 md:text-xl">
                         Choose your bread above, then enter your delivery details here.
                       </p>
                     </div>
                     <button
                       type="button"
-                      onClick={() => setOrderOpen(true)}
-                      className="order-cta rounded-full border border-apricot px-7 py-4 text-xl"
+                      onClick={openOrderForm}
+                      className="order-cta order-mobile-button w-full rounded-full border border-apricot px-7 py-4 text-lg md:w-auto md:text-xl"
                     >
                       Order now →
                     </button>
@@ -693,16 +693,6 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
             </p>
           </div>
           <div className="md:col-span-4">
-            <div className="mono text-ink-soft">For the baker</div>
-            <p className="mt-2 text-lg">
-              <Link href="/bakery" className="underline decoration-apricot underline-offset-4">
-                Open the order ledger →
-              </Link>
-              <br />
-              <Link href="/bakery#photo" className="underline decoration-apricot underline-offset-4">
-                Change the putok photo →
-              </Link>
-            </p>
             <a
               href={whatsappUrl(whatsappNumber)}
               target="_blank"
@@ -717,9 +707,9 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
         </div>
         <div className="mt-24">
           <div className="display text-[26vw] leading-[0.8] text-ink/90 md:text-[20vw]">PUTOK</div>
-          <div className="mono mt-6 flex flex-wrap justify-between gap-4 text-ink-soft">
-            <span>© {new Date().getFullYear()} · Made in Hunza</span>
-            <span>Milk tea not included. Yet.</span>
+          <div className="mono mt-6 flex flex-col gap-2 text-ink-soft sm:flex-row sm:items-center sm:justify-between">
+            <span className="text-[10px] sm:text-[11px]">© {new Date().getFullYear()} · Made in Hunza</span>
+            <span className="text-[10px] sm:text-right sm:text-[11px]">Milk tea not included. Yet.</span>
           </div>
         </div>
       </footer>

@@ -250,9 +250,9 @@ export default function AdminPage() {
     return (
       <main className="mx-auto flex min-h-screen max-w-lg items-center justify-center px-6 py-16">
         <div className="w-full rounded-2xl border border-ink/20 bg-white p-8 shadow-sm">
-          <p className="mono text-sm uppercase tracking-[0.2em] text-ink-soft">Admin access</p>
-          <h1 className="mt-4 display text-4xl">PUTOK Dashboard</h1>
-          <p className="mt-3 text-ink-soft">Sign in with an authorized admin account.</p>
+          <p className="mono text-sm uppercase tracking-[0.2em] text-ink-soft">Baker access</p>
+          <h1 className="mt-4 display text-4xl">PUTOK baker dashboard</h1>
+          <p className="mt-3 text-ink-soft">This dashboard is for the baker only. Sign in with the authorized baker account.</p>
 
           <form onSubmit={signIn} className="mt-8 space-y-4">
             <div>
@@ -291,7 +291,7 @@ export default function AdminPage() {
     <main className="mx-auto max-w-7xl px-6 py-10 md:px-10">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <p className="mono text-sm uppercase tracking-[0.2em] text-ink-soft">Admin panel</p>
+          <p className="mono text-sm uppercase tracking-[0.2em] text-ink-soft">Baker panel</p>
           <h1 className="display mt-2 text-5xl md:text-6xl">PUTOK orders</h1>
         </div>
         <button onClick={logout} className="rounded-full border border-ink px-5 py-3 mono hover:bg-ink hover:text-paper">
@@ -299,9 +299,9 @@ export default function AdminPage() {
         </button>
       </div>
 
-      {/* For the baker quick links */}
+      {/* Baker-only quick links */}
       <section className="mb-8 rounded-2xl border border-apricot/30 bg-apricot/5 p-5">
-        <p className="mono text-xs uppercase tracking-[0.18em] text-ink-soft">For the baker</p>
+        <p className="mono text-xs uppercase tracking-[0.18em] text-ink-soft">For the baker only</p>
         <div className="mt-3 flex flex-wrap gap-3">
           <Link
             href="/bakery"

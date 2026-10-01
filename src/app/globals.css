@@ -182,11 +182,30 @@ select.field {
   background: var(--color-apricot);
   color: var(--color-ink);
   transition: transform 0.2s, background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
+  min-width: 3.25rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 .order-cta:hover,
 .order-submit:hover {
   background: var(--color-paper);
   transform: translateY(-2px);
+}
+.order-mobile-button {
+  line-height: 1.1;
+}
+@media (max-width: 767px) {
+  .order-mobile-button {
+    width: 100%;
+    max-width: 220px;
+    min-height: 3.75rem;
+  }
 }
 .order-submit:disabled {
   opacity: 0.55;
