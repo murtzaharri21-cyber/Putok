@@ -547,7 +547,7 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
                         e.stopPropagation();
                         openOrderForm();
                       }}
-                      className="order-cta order-mobile-button w-full rounded-full border border-apricot px-7 py-4 text-lg md:w-auto md:text-xl"
+                      className="order-cta order-mobile-button order-now-button w-full rounded-full border-2 px-5 py-4 font-mono text-sm font-bold uppercase md:w-auto md:px-7 md:text-base"
                     >
                       Order now →
                     </button>
