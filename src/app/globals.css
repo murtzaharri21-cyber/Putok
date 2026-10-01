@@ -181,7 +181,8 @@ select.field {
 .order-submit {
   background: var(--color-apricot);
   color: var(--color-ink);
-  transition: transform 0.2s, background 0.2s;
+  border-color: var(--color-apricot);
+  transition: transform 0.2s, background 0.2s, border-color 0.2s;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -193,9 +194,22 @@ select.field {
   touch-action: manipulation;
 }
 .order-cta:hover,
-.order-submit:hover {
-  background: var(--color-paper);
-  transform: translateY(-2px);
+.order-submit:hover,
+.order-cta:focus-visible,
+.order-submit:focus-visible,
+.order-cta:active,
+.order-submit:active {
+  background: var(--color-apricot);
+  border-color: var(--color-apricot);
+  color: var(--color-ink);
+  transform: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .order-cta:hover,
+  .order-submit:hover {
+    background: var(--color-paper);
+    transform: translateY(-2px);
+  }
 }
 .order-mobile-button {
   line-height: 1.1;
