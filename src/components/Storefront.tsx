@@ -555,7 +555,7 @@ export default function Storefront({ products, whatsappNumber }: { products: Pro
                 </div>
               )}
 
-              {orderOpen && <form id="order-form" onSubmit={submit} className="order-form reveal mt-12 space-y-8">
+              {orderOpen && <form id="order-form" onSubmit={submit} className="order-form mt-12 space-y-8">
                 <div className="flex justify-end">
                   <button
                     type="button"
